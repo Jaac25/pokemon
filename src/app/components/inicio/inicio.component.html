@@ -1,0 +1,61 @@
+<div class="loading" *ngIf="loading">
+    <img src="../../../assets/loading2.gif" alt="">
+</div>
+<div class="container padding-left: 50">
+    <div class="container border-bottom">
+        <br>
+        <div class="row d-flex justify-content-between">
+            <button type="reset" class="btn btn-primary">CLEAN</button>
+            <input type="text" id="search" name="search">
+        </div>    
+        <br>
+    </div>
+    <br>
+    <div class="container row">
+        <div class="col-md-4 border-right">
+            <div class="row border-bottom">
+                <h3>Filters</h3>
+            </div>
+            <div class="container border-bottom">
+                <h4>Type:</h4>
+                <ng-container>
+                    <div class="row d-flex justify-content-center">
+                        
+                    </div>
+                </ng-container>
+            </div>
+            <div class="container border-bottom">
+                <h4>Color:</h4>
+                <ng-container>
+                    <div class="row d-flex justify-content-center">
+                        
+                    </div>
+                </ng-container>
+            </div>
+            <div class="container">
+                <h4>Gender:</h4>
+                <ng-container>
+                    <div *ngFor="let pokemon of pokemons">
+                        <label for="gender"></label>
+                        <input type="radio" id="gender" name="gender">
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-md">
+            <h5>Choose a pokemon to get more information</h5>
+            <ng-container>
+                <div class="row d-flex justify-content-center">
+                    <div *ngFor="let pokemon of pokemons">
+                        <div class="card">
+                            <img class="img" src={{pokemon.picture}} alt="">                            
+                            <h3 class="d-flex justify-content-center">{{pokemon.name}}</h3>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+

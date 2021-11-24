@@ -1,0 +1,8 @@
+.loading{
+    margin: 25px;
+    height: 5px;
+    z-index: 999;
+    position: fixed;
+    transform: translate(-50%, 0);
+    left: 50%;
+}
