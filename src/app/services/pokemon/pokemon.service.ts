@@ -62,95 +62,6 @@ export class PokemonService {
     return genders    
   }
 
-  async get20Pokemons(indice: number) {
-    let pokemonsResponse: any[] = []
-    let pokemons: any[] = []
-    let nextUrl: string = "";
-    await this.http.get('https://pokeapi.co/api/v2/pokemon?limit=20&offset='+indice).forEach((response: any) => {
-      pokemonsResponse = response.results
-      nextUrl = response.next
-    })
-    for(let i = 0;i<pokemonsResponse.length;i++){
-      let name = pokemonsResponse[i].name
-      let id: string = ""
-      let picture: string = ""
-      await this.http.get('https://pokeapi.co/api/v2/pokemon-species/'+name).forEach((pokemon: any) => {
-        id = pokemon.id
-        picture = this.getImage(id)
-      })
-      await this.http.get('https://pokeapi.co/api/v2/pokemon/'+id).forEach((pokemon: any) => {
-        id = pokemon.id
-        picture = this.getImage(id)
-      }) 
-      pokemons.push({
-        id,
-        name,
-        picture
-      })        
-    }
-    return {
-      pokemons,
-      nextUrl
-    }
-      /*for(let i = 0;i<response.pokemon_entries.length;i++){
-        
-        localStorage.setItem("pokemons",response.pokemon_entries[i].pokemon_species)
-        await this.http.get('https://pokeapi.co/api/v2/pokemon/'+responsePokemons[i].name).forEach((pokemon: any) => {
-          let newPokemon = new Pokemon(
-            pokemon.name,
-            pokemon.id,
-            "descripcion",
-            pokemon.height,
-            pokemon.weight,
-            "categoria",
-            "gender_rate species",
-            "habitat species",
-            "color species",
-            pokemon.types,
-            "evol especies",
-            pokemon.id.length == 
-          )
-        //console.log(responsePokemons[i].name)
-        //await this.http.get('https://pokeapi.co/api/v2/pokemon/'+responsePokemons[i].name).forEach((pokemon: any) => {
-          /*new Pokemon(
-            pokemon.name,
-            pokemon.id,
-            "",
-            pokemon.height,
-            pokemon.weight,
-            "",
-
-          )
-          console.log(pokemon)
-        })
-      }*/
-    
-    /*await this.http.get('https://pokeapi.co/api/v2/pokemon?limit=20&offset=890').forEach(async (response: any) => {
-      console.log(response)
-      responsePokemons = response.results
-      for(let i = 0;i<responsePokemons.length;i++){
-        //console.log(responsePokemons[i].name)
-        await this.http.get('https://pokeapi.co/api/v2/pokemon/'+responsePokemons[i].name).forEach((pokemon: any) => {
-          /*new Pokemon(
-            pokemon.name,
-            pokemon.id,
-            "",
-            pokemon.height,
-            pokemon.weight,
-            "",
-
-          )
-          console.log(pokemon)
-        })
-      }
-      //new Pokemon(poke)
-      //pokemons.push()
-    })
-    
-    
-    return [];*/
-  }
-
   async getPokemonsByType(type:string){
     let pokemonsByType: any[] = []
     await this.http.get('https://pokeapi.co/api/v2/type/'+type).forEach((response: any) => {
@@ -192,14 +103,16 @@ export class PokemonService {
     let habitat: string = ""
     let color: string = ""
     let types: any[] = []
-    let evolution: string = ""
+    let evolution: any[][] = []
     let picture: string = this.getImageFull(id)
-    
+
+    let evolutionChainUrl: string = ""
+
     await this.http.get('https://pokeapi.co/api/v2/pokemon/'+id).forEach((pokemon: any) => {  
       name = pokemon.name
       height = pokemon.height
       weight = pokemon.weight
-      types = pokemon.types
+      types = pokemon.types == null ? [] : pokemon.types
     })
     await this.http.get('https://pokeapi.co/api/v2/pokemon-species/'+id).forEach((pokemon: any) => {  
       if (pokemon.gender_rate == 1){
@@ -209,10 +122,11 @@ export class PokemonService {
       }else{
         gender = "genderless"
       }
-      habitat = pokemon.habitat.name
-      color = pokemon.color.name
-      evolution =pokemon.evolution_chain
+      habitat = pokemon.habitat == null ? "" : pokemon.habitat.name
+      color = pokemon.color == null ? "" : pokemon.color.name
+      evolutionChainUrl = pokemon.evolution_chain.url == null ? "" : pokemon.evolution_chain.url
     })
+    evolution = await this.getEvolutionChain(evolutionChainUrl)
     
     return new Pokemon(
       name,
@@ -228,6 +142,19 @@ export class PokemonService {
       evolution,
       picture
     )
+  }
+
+  async getEvolutionChain(evolutionChainUrl: string){
+    let evolution: any[]= []
+    await this.http.get(evolutionChainUrl).forEach((response: any) => {
+      evolution.push(response.chain.species)
+      let evolves_to: any[] = response.chain.evolves_to      
+      while (evolves_to.length > 0) {
+        evolution.push(evolves_to[0].species)
+        evolves_to = evolves_to[0].evolves_to
+      }
+    })
+    return evolution;
   }
 
   getImage(id:string){

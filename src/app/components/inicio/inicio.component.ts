@@ -17,6 +17,7 @@ export class InicioComponent implements OnInit {
   showArrow: boolean
   noElements: boolean
   showInfoPokemon: boolean
+  haveEvolution: boolean
 
   pokemons: any[]
   types: any[]
@@ -42,6 +43,7 @@ export class InicioComponent implements OnInit {
     this.showArrow = false
     this.noElements = false
     this.showInfoPokemon = false
+    this.haveEvolution = false
 
     this.pokemons = []
     this.types = []
@@ -53,7 +55,7 @@ export class InicioComponent implements OnInit {
       genders: []
     }
 
-    this.pokemon = new Pokemon("Charizard","6","Un pokemon dragón volador muy fuerte y gigante","17","905","","Female","mountain","red",[],"","")
+    this.pokemon = new Pokemon("Charizard","6","Un pokemon dragón volador muy fuerte y gigante","17","905","","Female","mountain","red",[],[],"")
   }
 
   async ngOnInit(): Promise<void> {
@@ -67,23 +69,44 @@ export class InicioComponent implements OnInit {
     this.loadMore = true
   }
   async getPokemons() {
-    let pokemonsResponse = await this.pokemonService.getAllPokemons()
-    localStorage.setItem("allPokemons", JSON.stringify(pokemonsResponse))
+    let localPokemons = localStorage.getItem("allPokemons")
+    if(localPokemons == null){
+      let pokemonsResponse = await this.pokemonService.getAllPokemons()
+      localStorage.setItem("allPokemons", JSON.stringify(pokemonsResponse))
+    }
   }
+
   async getTypes(){
-    let typesResponse = await this.pokemonService.getTypes()
-    this.types = typesResponse
-    localStorage.setItem("typesPokemon", JSON.stringify(typesResponse))
+    let localTypes = localStorage.getItem("typesPokemon")
+    if(localTypes == null){
+      let typesResponse = await this.pokemonService.getTypes()
+      this.types = typesResponse
+      localStorage.setItem("typesPokemon", JSON.stringify(typesResponse))
+    }else{
+      this.types = JSON.parse(localTypes)
+    }
   }
+
   async getColors(){
-    let colorsResponse = await this.pokemonService.getColors()
-    this.colors = colorsResponse
-    localStorage.setItem("colorsPokemon", JSON.stringify(colorsResponse))
+    let localColors = localStorage.getItem("colorsPokemon")
+    if(localColors == null){
+      let colorsResponse = await this.pokemonService.getColors()
+      this.colors = colorsResponse
+      localStorage.setItem("colorsPokemon", JSON.stringify(colorsResponse))
+    }else{
+      this.colors = JSON.parse(localColors)
+    }
   }
+
   async getGenders(){
-    let gendersResponse = await this.pokemonService.getGenders()
-    this.genders = gendersResponse
-    localStorage.setItem("gendersPokemon", JSON.stringify(gendersResponse))
+    let localGenders = localStorage.getItem("gendersPokemon")
+    if(localGenders == null){
+      let gendersResponse = await this.pokemonService.getGenders()
+      this.genders = gendersResponse
+      localStorage.setItem("gendersPokemon", JSON.stringify(gendersResponse))
+    }else{
+      this.genders = JSON.parse(localGenders)
+    }
   }
 
   add20Pokemons() {
@@ -196,7 +219,9 @@ export class InicioComponent implements OnInit {
             pokemonsWithFilters = pokemonsByColor
           }
         }else{
-          if (pokemonsByGender.length >= 0 ){
+          if (pokemonsByGender.length > 0 ){
+            pokemonsWithFilters = pokemonsByGender
+          }else if(pokemonsByGender.length == 0){
             pokemonsWithFilters = JSON.parse(localStoragePokemon)
           }else{
             this.noElements = true
@@ -290,8 +315,18 @@ export class InicioComponent implements OnInit {
   }
 
   async showPokemon(id: string){
+    this.haveEvolution = true
     this.loading = true
     this.pokemon = await this.pokemonService.getInfoPokemon(id)
+    if(this.pokemon.evolution.length <= 1){
+      this.haveEvolution = false
+    }else{
+      for(let i = 0;i<this.pokemon.evolution.length;i++){
+        let pokemon = this.searchPokemonLocalStorage(this.pokemon.evolution[i].name)
+        this.pokemon.evolution[i] = pokemon
+      }
+    }
+
     this.showInfoPokemon = true
     this.loading = false
   }

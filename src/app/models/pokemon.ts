@@ -9,10 +9,10 @@ class Pokemon{
     private _habitat: string = "";
     private _color: string = "";
     private _types: any[] = [];
-    private _evolution: string = "";
+    private _evolution: any[] = [];
     private _picture: string = "";
 
-    constructor(name: string,id: string, description: string, height: string, weight: string, category: string, gender: string, habitat: string, color: string, types: any[], evolution: string, picture: any){
+    constructor(name: string,id: string, description: string, height: string, weight: string, category: string, gender: string, habitat: string, color: string, types: any[], evolution: any[], picture: any){
         this._name = name;
         this._id = id;
         this._description = description;

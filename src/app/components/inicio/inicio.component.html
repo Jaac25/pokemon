@@ -83,12 +83,12 @@
     </div>
 </div>
 
-<div class="container pokemonInfo" *ngIf="showInfoPokemon">
+<div class="container pokemonInfo overflow-auto" *ngIf="showInfoPokemon ">
     <button class="close" (click)="showInfoPokemon=false">X</button>
     <div class="container">
         <div class="row border-bottom">
             <div class="col-md-6">
-                <img src="{{pokemon.picture}}" alt="">
+                <img class="imgFull" src="{{pokemon.picture}}" alt="">
             </div>
             <div class="col-md-6">
                 <div class="row">
@@ -126,15 +126,43 @@
                         <td>{{pokemon.color}}</td>
                     </tr>
                 </table>
-                <h4>Types:</h4>
-                <ng-container></ng-container>
+                <div class="container">
+                    <h4>Types:</h4>
+                    <ng-container>
+                        <div class="row container">
+                            <div *ngFor="let type of pokemon.types" class="col-sm-3">
+                                <div class="border border-dark text-center">
+                                    <h5>{{type.type.name}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <br>
+                </div>
             </div>
         </div>
-        <div class="container">
+        <div class="container" *ngIf="haveEvolution">
             <br>
             <div class="row">
                 <h3>Evolution</h3>
+                <ng-container>
+                    <div class="container d-flex justify-content-center">
+                        <div class="row d-flex justify-content-center">
+                            <div *ngFor="let evolution of pokemon.evolution">
+                                <div class="col-md text-center">
+                                    <img class="imgEvolution" src="{{evolution.picture}}" alt="">
+                                    <h5>{{evolution.name}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
             </div>
+        </div>
+        <div class="container" *ngIf="haveEvolution==false">
+            <br>
+            <h3>Evolution</h3>
+            <h5>This pokemon does not evolve</h5>
         </div>
     </div>
 </div>
