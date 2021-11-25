@@ -114,16 +114,14 @@ export class InicioComponent implements OnInit {
     let localStoragePokemon = localStorage.getItem("allPokemons")
     if(localStoragePokemon != null){
       let pokemonsDB = JSON.parse(localStoragePokemon)
-      let pokemones : any[] = []
       for(let i = this.cantPokemons;i<this.cantPokemons+20;i++){
         if(i>=pokemonsDB.length){
           this.loadMore = false
         }else{
           this.loadMore = true
-          pokemones.push(pokemonsDB[i])
+          this.pokemons.push(pokemonsDB[i])
         }
       }
-      this.pokemons = pokemones
     }
     this.loading = false
   }

@@ -113,6 +113,7 @@ export class PokemonService {
       height = pokemon.height
       weight = pokemon.weight
       types = pokemon.types == null ? [] : pokemon.types
+      category = pokemon.types == null ? "" : pokemon.types[0].type.name
     })
     await this.http.get('https://pokeapi.co/api/v2/pokemon-species/'+id).forEach((pokemon: any) => {  
       if (pokemon.gender_rate == 1){
