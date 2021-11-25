@@ -1,61 +1,140 @@
 <div class="loading" *ngIf="loading">
     <img src="../../../assets/loading2.gif" alt="">
 </div>
-<div class="container padding-left: 50">
+<button class="btn btn-success btnLoad" *ngIf='loadMore' (click)="loadMorePokemons()" >
+    <h3>Load more</h3>
+</button>
+<div *ngIf="showArrow">
+    <img class="arrow" src="../../../assets/arrowDown.gif" alt="">
+</div>
+
+<div class="container">
     <div class="container border-bottom">
         <br>
         <div class="row d-flex justify-content-between">
-            <button type="reset" class="btn btn-primary">CLEAN</button>
-            <input type="text" id="search" name="search">
-        </div>    
+            <button type="reset" class="btn btn-primary" (click)="clean()">CLEAN</button>
+            <input type="text" id="search" name="search" placeholder="search" (keyup)="searchPokemonByID_Name($event)" >
+        </div>   
         <br>
     </div>
     <br>
-    <div class="container row">
-        <div class="col-md-4 border-right">
-            <div class="row border-bottom">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="border-bottom">
                 <h3>Filters</h3>
             </div>
             <div class="container border-bottom">
+                <br>
                 <h4>Type:</h4>
                 <ng-container>
-                    <div class="row d-flex justify-content-center">
-                        
+                    <div class="row">
+                        <div *ngFor="let type of types" class="col-sm-6">
+                            <input type="checkbox" id="{{type.name}}" name="{{type.name}}" value="{{type.name}}" (click)="addFilter('types',type.name)"> <label for="{{type.name}}">{{type.name}}</label><br>
+                        </div>
                     </div>
                 </ng-container>
+                <br>
             </div>
             <div class="container border-bottom">
+                <br>
                 <h4>Color:</h4>
                 <ng-container>
                     <div class="row d-flex justify-content-center">
-                        
+                        <div *ngFor="let color of colors" class="col-sm-3">
+                            <button class="square {{color.name}}" (click)="addFilter('colors',color.name)"></button>
+                        </div>
                     </div>
                 </ng-container>
+                <br>
             </div>
             <div class="container">
+                <br>
                 <h4>Gender:</h4>
                 <ng-container>
-                    <div *ngFor="let pokemon of pokemons">
-                        <label for="gender"></label>
-                        <input type="radio" id="gender" name="gender">
+                    <div class="row">
+                        <div *ngFor="let gender of genders" class="col-sm-12">
+                            <input type="radio" id="{{gender}}" name="genders" value="{{gender}}" (click)="addFilter('genders',gender)"> <label for="{{gender}}">{{gender}}</label><br>
+                        </div>
                     </div>
                 </ng-container>
             </div>
         </div>
         <div class="col-md">
             <h5>Choose a pokemon to get more information</h5>
-            <ng-container>
-                <div class="row d-flex justify-content-center">
-                    <div *ngFor="let pokemon of pokemons">
-                        <div class="card">
-                            <img class="img" src={{pokemon.picture}} alt="">                            
-                            <h3 class="d-flex justify-content-center">{{pokemon.name}}</h3>
+            <div *ngIf="noElements">
+                <h3>No items found...</h3>
+            </div>
+            <div class="container overflow-auto" *ngIf="noElements==false">
+                <ng-container>
+                    <div class="row d-flex justify-content-center">
+                        <div *ngFor="let pokemon of pokemons">
+                            <div class="container">
+                                <button (click)="showPokemon(pokemon.id)">
+                                    <img src={{pokemon.picture}} alt="">                            
+                                    <h3>{{pokemon.name}}</h3>   
+                                </button>
+                            </div>
+                            <br>
                         </div>
-                        <br>
                     </div>
-                </div>
-            </ng-container>
+                </ng-container>
+            </div>
         </div>
     </div>
 </div>
 
+<div class="container pokemonInfo" *ngIf="showInfoPokemon">
+    <button class="close" (click)="showInfoPokemon=false">X</button>
+    <div class="container">
+        <div class="row border-bottom">
+            <div class="col-md-6">
+                <img src="{{pokemon.picture}}" alt="">
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md">
+                        <h3>{{pokemon.name}}</h3>
+                    </div>
+                    <div class="col-md">
+                        <div class="idRound d-flex justify-content-center">{{pokemon.id}}</div>
+                    </div>
+                </div>
+                <p>{{pokemon.description}}</p>
+                <table class="table table-striped">
+                    <tr>
+                        <td>Height</td>
+                        <td>{{pokemon.height}}</td>
+                    </tr>
+                    <tr>
+                        <td>Weight</td>
+                        <td>{{pokemon.weight}}</td>
+                    </tr>
+                    <tr>
+                        <td>Category</td>
+                        <td>{{pokemon.category}}</td>
+                    </tr>
+                    <tr>
+                        <td>Gender</td>
+                        <td>{{pokemon.gender}}</td>
+                    </tr>
+                    <tr>
+                        <td>Habitat</td>
+                        <td>{{pokemon.habitat}}</td>
+                    </tr>
+                    <tr>
+                        <td>Color</td>
+                        <td>{{pokemon.color}}</td>
+                    </tr>
+                </table>
+                <h4>Types:</h4>
+                <ng-container></ng-container>
+            </div>
+        </div>
+        <div class="container">
+            <br>
+            <div class="row">
+                <h3>Evolution</h3>
+            </div>
+        </div>
+    </div>
+</div>

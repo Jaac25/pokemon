@@ -1,8 +1,88 @@
 .loading{
     margin: 25px;
     height: 5px;
-    z-index: 999;
+    z-index: 100;
     position: fixed;
     transform: translate(-50%, 0);
     left: 50%;
+}
+
+.btnLoad{
+    transform: translate(-50%, 0);
+    left: 50%;
+    bottom: 20px;
+    z-index: 100;
+    position: fixed;
+}
+
+.arrow{
+    width: 10%;
+    z-index: 100;
+    position: fixed;
+	bottom:40px;
+	right:40px;
+}
+
+.pokemonInfo{
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.2);
+    
+    top: 15%;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 10px;
+    max-width: 70%;
+    width: 100%;
+    z-index: 999;
+}
+
+.idRound{
+    border-radius: 20px;
+    width: 25px;
+    background: grey;
+}
+
+.close{
+    background: red;
+    color: white;
+    bottom:40px;
+	right:40px;
+}
+
+.square{
+    width: 50px;
+    height: 50px;
+}
+.black{
+    background: black;
+}
+.blue{
+    background: blue;
+}
+.brown{
+    background: brown;
+}
+.gray{
+    background: gray;
+}
+.green{
+    background: green;
+}
+.pink{
+    background: pink;
+}
+.purple{
+    background: purple;
+}
+.red{
+    background: red;
+}
+.white{
+    background: white;
+}
+.yellow{
+    background: yellow;
 }
