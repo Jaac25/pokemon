@@ -113,7 +113,6 @@ export class PokemonService {
       height = pokemon.height
       weight = pokemon.weight
       types = pokemon.types == null ? [] : pokemon.types
-      category = pokemon.types == null ? "" : pokemon.types[0].type.name
     })
     await this.http.get('https://pokeapi.co/api/v2/pokemon-species/'+id).forEach((pokemon: any) => {  
       if (pokemon.gender_rate == 1){
@@ -122,6 +121,12 @@ export class PokemonService {
         gender = "male"
       }else{
         gender = "genderless"
+      }
+      if(pokemon.flavor_text_entries != null && pokemon.flavor_text_entries.length > 0){
+        description = pokemon.flavor_text_entries[0].flavor_text
+      }
+      if(pokemon.genera != null){
+        category = this.getCategory(pokemon.genera)
       }
       habitat = pokemon.habitat == null ? "" : pokemon.habitat.name
       color = pokemon.color == null ? "" : pokemon.color.name
@@ -143,6 +148,14 @@ export class PokemonService {
       evolution,
       picture
     )
+  }
+
+  getCategory(categories: any[]){
+    for(let i = 0;i<categories.length;i++){
+      if(categories[i].language.name == "es" || categories[i].language.name == "en"){
+        return categories[i].genus
+      }
+    }
   }
 
   async getEvolutionChain(evolutionChainUrl: string){
